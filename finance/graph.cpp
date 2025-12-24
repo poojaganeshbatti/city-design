@@ -1,29 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Edge {
-    int to;
-    int distance;
-};
-
 int main() {
-    int V, E;
-    cin >> V >> E; // V = banks + ATMs + residential nodes, E = edges
-    vector<vector<Edge>> graph(V);
+    int V = 5; // number of banks
+    vector<vector<int>> adj(V);
 
-    for(int i=0; i<E; i++){
-        int u, v, d;
-        cin >> u >> v >> d;
-        graph[u].push_back({v, d});
-        graph[v].push_back({u, d}); // undirected
-    }
+    // Sample connections between banks and users
+    adj[0].push_back(1);
+    adj[0].push_back(2);
+    adj[1].push_back(3);
+    adj[2].push_back(3);
+    adj[3].push_back(4);
 
-    // Display connections
+    cout << "Bank connections (Adjacency List):\n";
     for(int i=0;i<V;i++){
-        cout<<"Node "<<i<<" connected to:\n";
-        for(auto &e: graph[i])
-            cout<<"  -> "<<e.to<<" (Distance "<<e.distance<<")\n";
+        cout << "Bank " << i << " connected to: ";
+        for(int j: adj[i]) cout << j << " ";
+        cout << "\n";
     }
-
-    return 0;
 }
+
