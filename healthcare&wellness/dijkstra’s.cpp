@@ -1,44 +1,49 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> dijkstra(vector<vector<pair<int,int>>> &adj, int source) {
-    int V = adj.size();
-    vector<int> dist(V, INT_MAX);
-    dist[source] = 0;
+const int INF = 1e9;
 
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-    pq.push({0, source});
+void dijkstra(int V, int src, vector<pair<int,int>> adj[]) {
+    vector<int> dist(V, INF);
+    dist[src] = 0;
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;
+    pq.push({0, src});
 
-    while(!pq.empty()){
+    while(!pq.empty()) {
         int d = pq.top().first;
         int u = pq.top().second;
         pq.pop();
 
         if(d > dist[u]) continue;
 
-        for(auto edge: adj[u]){
+        for(auto edge : adj[u]) {
             int v = edge.first;
             int w = edge.second;
-            if(dist[u] + w < dist[v]){
+            if(dist[u] + w < dist[v]) {
                 dist[v] = dist[u] + w;
                 pq.push({dist[v], v});
             }
         }
     }
-    return dist;
+
+    // Print distances
+    cout << "Shortest distances from node " << src << ":\n";
+    for(int i=0;i<V;i++) cout << "Node " << i << ": " << dist[i] << "\n";
 }
 
 int main() {
-    int V = 3;
-    vector<vector<pair<int,int>>> adj(V);
-    adj[0].push_back({1,4});
-    adj[0].push_back({2,6});
-    adj[1].push_back({0,4});
-    adj[1].push_back({2,3});
-    adj[2].push_back({0,6});
-    adj[2].push_back({1,3});
+    int V = 5;
+    vector<pair<int,int>> adj[V];
+    // Example edges: {neighbor, weight}
+    adj[0].push_back({1, 10});
+    adj[0].push_back({2, 3});
+    adj[1].push_back({2, 1});
+    adj[1].push_back({3, 2});
+    adj[2].push_back({1, 4});
+    adj[2].push_back({3, 8});
+    adj[2].push_back({4, 2});
+    adj[3].push_back({4, 7});
+    adj[4].push_back({3, 9});
 
-    vector<int> dist = dijkstra(adj, 0);
-    for(int i=0;i<V;i++)
-        cout << "Distance from Residential to Facility " << i << ": " << dist[i] << " km\n";
+    dijkstra(V, 0, adj);
 }
