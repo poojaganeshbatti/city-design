@@ -1,49 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int INF = 1e9;
-
-void dijkstra(int V, int src, vector<pair<int,int>> adj[]) {
-    vector<int> dist(V, INF);
-    dist[src] = 0;
+void dijkstra(int src, vector<vector<pair<int,int>>>& graph, int V) {
+    vector<int> dist(V, INT_MAX);
     priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;
+
+    dist[src] = 0;
     pq.push({0, src});
 
-    while(!pq.empty()) {
-        int d = pq.top().first;
+    while (!pq.empty()) {
         int u = pq.top().second;
         pq.pop();
 
-        if(d > dist[u]) continue;
-
-        for(auto edge : adj[u]) {
+        for (auto edge : graph[u]) {
             int v = edge.first;
-            int w = edge.second;
-            if(dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
+            int weight = edge.second;
+
+            if (dist[u] + weight < dist[v]) {
+                dist[v] = dist[u] + weight;
                 pq.push({dist[v], v});
             }
         }
     }
 
-    // Print distances
-    cout << "Shortest distances from node " << src << ":\n";
-    for(int i=0;i<V;i++) cout << "Node " << i << ": " << dist[i] << "\n";
+    cout << "Fastest time to hospitals:\n";
+    for (int i = 0; i < V; i++)
+        cout << "Hospital " << i << " : " << dist[i] << endl;
 }
 
 int main() {
     int V = 5;
-    vector<pair<int,int>> adj[V];
-    // Example edges: {neighbor, weight}
-    adj[0].push_back({1, 10});
-    adj[0].push_back({2, 3});
-    adj[1].push_back({2, 1});
-    adj[1].push_back({3, 2});
-    adj[2].push_back({1, 4});
-    adj[2].push_back({3, 8});
-    adj[2].push_back({4, 2});
-    adj[3].push_back({4, 7});
-    adj[4].push_back({3, 9});
+    vector<vector<pair<int,int>>> graph(V);
 
-    dijkstra(V, 0, adj);
+    graph[0].push_back({1, 4});
+    graph[0].push_back({2, 1});
+    graph[2].push_back({1, 2});
+    graph[1].push_back({3, 1});
+    graph[2].push_back({3, 5});
+    graph[3].push_back({4, 3});
+
+    dijkstra(0, graph, V);
+    return 0;
 }
+
