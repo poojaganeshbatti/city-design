@@ -1,35 +1,27 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-using namespace std;
+from collections import deque
 
-void BFS(int start, vector<int> adj[], int V){
-    vector<bool> visited(V, false);
-    queue<int> q;
-    visited[start] = true;
-    q.push(start);
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    nearest_hospitals = []
 
-    while(!q.empty()){
-        int node = q.front(); q.pop();
-        cout << node << " "; // visiting node
-        for(int neighbor: adj[node]){
-            if(!visited[neighbor]){
-                visited[neighbor]=true;
-                q.push(neighbor);
-            }
-        }
-    }
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            if "Hospital" in node:
+                nearest_hospitals.append(node)
+            for neighbor in graph.get(node, []):
+                if neighbor not in visited:
+                    queue.append(neighbor)
+    return nearest_hospitals
+
+graph = {
+    'Home': ['Clinic1', 'Clinic2'],
+    'Clinic1': ['Hospital1'],
+    'Clinic2': ['Hospital2'],
+    'Hospital1': [],
+    'Hospital2': []
 }
 
-int main(){
-    int V = 5;
-    vector<int> adj[V];
-    adj[0] = {1,2};
-    adj[1] = {3};
-    adj[2] = {3,4};
-    adj[3] = {4};
-
-    cout << "BFS traversal from node 0:\n";
-    BFS(0, adj, V);
-    return 0;
-}
+print(bfs(graph, 'Home'))
