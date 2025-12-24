@@ -1,32 +1,34 @@
-#include <iostream>
-#include <vector>
-using namespace std;
+class SegmentTree:
+    def __init__(self, data):
+        self.n = len(data)
+        self.tree = [0]*(2*self.n)
+        for i in range(self.n):
+            self.tree[self.n + i] = data[i]
+        for i in range(self.n-1, 0, -1):
+            self.tree[i] = self.tree[2*i] + self.tree[2*i+1]
 
-class SegmentTree {
-    vector<int> tree;
-    int n;
-public:
-    SegmentTree(vector<int>& data) {
-        n = data.size();
-        tree.resize(2*n);
-        for(int i=0;i<n;i++) tree[n+i]=data[i];
-        for(int i=n-1;i>0;i--) tree[i]=tree[2*i]+tree[2*i+1];
-    }
-    int query(int l, int r) { // sum in [l,r)
-        int res=0;
-        l+=n; r+=n;
-        while(l<r){
-            if(l%2) res+=tree[l++];
-            if(r%2) res+=tree[--r];
-            l/=2; r/=2;
-        }
-        return res;
-    }
-};
+    def update(self, index, value):
+        index += self.n
+        self.tree[index] = value
+        while index > 1:
+            index //= 2
+            self.tree[index] = self.tree[2*index] + self.tree[2*index+1]
 
-int main(){
-    vector<int> capacity = {50, 30, 20, 40}; // hospital capacities
-    SegmentTree st(capacity);
-    cout << "Total capacity of zone 1-3: " << st.query(1,4) << endl; // 30+20+40=90
-    return 0;
-}
+    def query(self, l, r):
+        l += self.n
+        r += self.n
+        res = 0
+        while l <= r:
+            if l % 2 == 1:
+                res += self.tree[l]
+                l += 1
+            if r % 2 == 0:
+                res += self.tree[r]
+                r -= 1
+            l //= 2
+            r //= 2
+        return res
+
+beds = [5, 3, 6, 2, 4]
+st = SegmentTree(beds)
+print(st.query(1,3))
